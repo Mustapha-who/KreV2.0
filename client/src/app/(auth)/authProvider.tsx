@@ -1,21 +1,28 @@
-import React, { use } from 'react';
-import { Amplify } from 'aws-amplify';
+"use client";
 
-import { Authenticator, Heading, Radio, RadioGroupField, useAuthenticator, View } from '@aws-amplify/ui-react';
-import '@aws-amplify/ui-react/styles.css';
+import React, { useEffect } from "react";
+import { Amplify } from "aws-amplify";
+import {
+  Authenticator,
+  Heading,
+  Radio,
+  RadioGroupField,
+  useAuthenticator,
+  View,
+} from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
+import { useRouter, usePathname } from "next/navigation";
 
-// kan tlawej mnin jibt il variables hadhekom ahhwa il docs :
 // https://docs.amplify.aws/gen1/javascript/tools/libraries/configure-categories/
-
 Amplify.configure({
-    Auth : {
-        Cognito: {
-            userPoolId: process.env.NEXT_PUBLIC_AWS_COGNITO_USER_POOL_ID!,
-            userPoolClientId: process.env.NEXT_PUBLIC_AWS_COGNITO_USER_POOL_CLIENT_ID!
-        }
-    }
+  Auth: {
+    Cognito: {
+      userPoolId: process.env.NEXT_PUBLIC_AWS_COGNITO_USER_POOL_ID!,
+      userPoolClientId:
+        process.env.NEXT_PUBLIC_AWS_COGNITO_USER_POOL_CLIENT_ID!,
+    },
+  },
 });
-
 
 const components = {
   Header() {
@@ -91,8 +98,6 @@ const components = {
   },
 };
 
-
-
 const formFields = {
   signIn: {
     username: {
@@ -134,19 +139,38 @@ const formFields = {
   },
 };
 
-const auth = ({children}: {children: React.ReactNode}) => {
-    const { user } = useAuthenticator((context) => [context.user]);
+const Auth = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuthenticator((context) => [context.user]);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const isAuthPage = pathname.match(/^\/(signin|signup)$/);
+  const isDashboardPage =
+    pathname.startsWith("/manager") || pathname.startsWith("/tenants");
+
+  // Redirect authenticated users away from auth pages
+  useEffect(() => {
+    if (user && isAuthPage) {
+      router.push("/");
+    }
+  }, [user, isAuthPage, router]);
+
+  // Allow access to public pages without authentication
+  if (!isAuthPage && !isDashboardPage) {
+    return <>{children}</>;
+  }
+
   return (
-    <div className="h-full">
-    <Authenticator
-    components={components}
-    formFields={formFields}
-    >
-        
-      {() => <>{children}</>}
-    </Authenticator>
+    <div className="h-full bg-white text-black">
+      <Authenticator
+        initialState={pathname.includes("signup") ? "signUp" : "signIn"}
+        components={components}
+        formFields={formFields}
+      >
+        {() => <>{children}</>}
+      </Authenticator>
     </div>
   );
-}
+};
 
-export default auth;
+export default Auth;

@@ -9,6 +9,9 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
+const tenantRoutes_1 = __importDefault(require("./routes/tenantRoutes"));
+const managerRoutes_1 = __importDefault(require("./routes/managerRoutes"));
+const authMiddleware_1 = require("./middleware/authMiddleware");
 /* ROUTE IMPORT */
 /* CONFIGURATIONS */
 dotenv_1.default.config();
@@ -21,11 +24,13 @@ app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
 /* ROUTES */
-app.get("/", (req, res) => {
+app.get("/", (0, authMiddleware_1.authMiddleware)(["manager"]), (req, res) => {
     res.send("This is home route");
 });
+app.use("/tenants", (0, authMiddleware_1.authMiddleware)(["tenant"]), tenantRoutes_1.default);
+app.use("/managers", (0, authMiddleware_1.authMiddleware)(["manager"]), managerRoutes_1.default);
 /* SERVER */
-const port = process.env.PORT || 3002;
-app.listen(port, () => {
+const port = Number(process.env.PORT) || 3002;
+app.listen(port, "0.0.0.0", () => {
     console.log(`Server running on port ${port}`);
 });
