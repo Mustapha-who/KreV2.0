@@ -11,6 +11,7 @@ const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
 const tenantRoutes_1 = __importDefault(require("./routes/tenantRoutes"));
 const managerRoutes_1 = __importDefault(require("./routes/managerRoutes"));
+const propertyRoutes_1 = __importDefault(require("./routes/propertyRoutes"));
 const authMiddleware_1 = require("./middleware/authMiddleware");
 /* ROUTE IMPORT */
 /* CONFIGURATIONS */
@@ -29,6 +30,7 @@ app.get("/", (0, authMiddleware_1.authMiddleware)(["manager"]), (req, res) => {
 });
 app.use("/tenants", (0, authMiddleware_1.authMiddleware)(["tenant"]), tenantRoutes_1.default);
 app.use("/managers", (0, authMiddleware_1.authMiddleware)(["manager"]), managerRoutes_1.default);
+app.use("/properties", propertyRoutes_1.default);
 /* SERVER */
 const port = Number(process.env.PORT) || 3002;
 app.listen(port, "0.0.0.0", () => {
