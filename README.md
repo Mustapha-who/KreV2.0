@@ -1,13 +1,11 @@
 # 🏠 Enterprise Real Estate Rental Web App  
-<img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r1.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r2.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r3.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r4.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r5.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r6.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r7.png" width="500"/>
-
-
-
-
-
-
-
-
+![Image Alt](https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r1.png)  
+![Image Alt](https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r2.png)  
+![Image Alt](https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r3.png)  
+![Image Alt](https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r7.png)  
+![Image Alt](https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r4.png)  
+![Image Alt](https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r5.png)  
+![Image Alt](https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r6.png)  
 
 
 ## 📌 Description  
