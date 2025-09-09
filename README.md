@@ -1,4 +1,14 @@
 # 🏠 Enterprise Real Estate Rental Web App  
+<img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r1.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r2.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r3.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r4.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r5.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r6.png" width="500"/><img src="https://github.com/Mustapha-who/KreV2.0/blob/da9fecc91494e74dd4f6c0fdc4bdbeb3c3ed9532/client/public/r7.png" width="500"/>
+
+
+
+
+
+
+
+
+
 
 ## 📌 Description  
 This project is a **full-stack rental apartment management platform** built with **Next.js (frontend)** and **Node.js/Express (backend)**, deployed on **AWS**. It supports **tenants and managers**, with role-based dashboards, advanced property search (server-side filtering + Mapbox integration), secure authentication with **AWS Cognito**, and image uploads via **S3**.  
