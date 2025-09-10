@@ -71,3 +71,10 @@ npx prisma migrate dev --name init
 5️⃣ Check the database with Prisma Studio (optional)
 npx prisma studio
 ```
+## 📐 UML Diagram
+
+Here is the class diagram representing the main entities and their relationships in the system:  
+
+![Class Diagram](https://github.com/Mustapha-who/KreV2.0/blob/736e1291a4ca15d5a6ffac700f792b0403a054a9/client/public/r8.png)
+
+
