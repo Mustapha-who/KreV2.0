@@ -72,83 +72,202 @@ npx prisma migrate dev --name init
 npx prisma studio
 ```
 
-## ☁️ AWS Infrastructure Setup
+# ☁️ AWS Infrastructure Setup:
 
-Below are the steps we followed to deploy the project on AWS. Most resources were created via the AWS Console interface, and only the EC2 server uses bash commands after SSH access.
+This document outlines the complete AWS infrastructure deployment for our rental application. The architecture follows AWS best practices with secure networking, managed databases, and scalable hosting solutions.
 
-🌐 VPC (Networking)
-Role: Provides secure network isolation for backend services.
-- In the AWS Console → VPC → Create VPC → choose "VPC and more".
-- Created:
-  - 1 public subnet (for EC2)
-  - 2 private subnets (for RDS in different AZs)
-  - 1 Internet Gateway (attached to the VPC)
-- Created 2 route tables:
-  - Public route table → associated with the public subnet → has a route to the Internet Gateway.
-  - Private route table → associated with the two private subnets.
-- Created 2 security groups:
-  - sg-ec2 → allow inbound HTTP (5000) and SSH (22) from our IP.
-  - sg-rds → allow inbound Postgres (5432) only from sg-ec2.
 
-🖥️ EC2 (Backend Server)
-Role: Runs the Node.js/Express backend.
-- In AWS Console → EC2 → Launch Instance → (choose your instance).
-- Place it in the public subnet and attach sg-ec2.
-- Create a key pair (.pem) for SSH access.
-- Connect via SSH from your local machine:
-  ssh -i your-key.pem ubuntu@your-ec2-public-ip
-- Inside EC2, install dependencies and run backend:
-  sudo apt update
-  sudo apt install -y nodejs npm git
-  sudo npm install -g pm2
-  git clone https://github.com/your-username/rental-app.git
-  cd rental-app/server
-  nano .env
- # Add: PORT, DATABASE_URL, S3_BUCKET_NAME
-  npm install
-  npx prisma migrate deploy
-  pm2 start or npm run dev
-  
+## Architecture Overview
 
-🗄️ RDS (PostgreSQL + PostGIS)
-Role: Stores application data.
-- Go to RDS → Create database → PostgreSQL engine.
-- Place it in the 2 private subnets (multi-AZ) and attach sg-rds.
-- After it's available, copy the endpoint.
-- From EC2 connect and enable PostGIS:
-  sudo apt install -y postgresql-client
-  psql -h <rds-endpoint> -U <username> -d <dbname>
-  CREATE EXTENSION postgis;
-- Add DATABASE_URL in the backend .env and restart the server.
+Our application uses the following AWS services:
 
-🪣 S3 (Image Storage)
-Role: Stores property images.
-- Go to S3 → Create bucket.
-- Disable "Block all public access" (if uploads need public access).
-- Under Permissions → add CORS rule:
-  [
-    {"AllowedHeaders": ["*"], "AllowedMethods": ["GET","POST","PUT"], "AllowedOrigins": ["*"]}
-  ]
-- Create an IAM user with AmazonS3FullAccess → get access keys → use them in backend.
+- **VPC**: Network isolation and security
+- **EC2**: Node.js/Express backend hosting
+- **RDS**: PostgreSQL database with PostGIS extension
+- **S3**: Image storage for property photos
+- **Cognito**: User authentication and authorization
+- **API Gateway**: API management and security
+- **Amplify**: Next.js frontend hosting and CI/CD
 
-🧩 Cognito + API Gateway
-Role: Handles authentication and secures API requests.
-- Go to Cognito → Create User Pool → enable email login → create App Client.
-- Copy User Pool ID and Client ID → add them to frontend .env.
-- Go to API Gateway → Create REST API → integrate it with your EC2 backend endpoint.
-- Create a Cognito Authorizer → attach it to protected routes → deploy API.
-- Use API Gateway Invoke URL as NEXT_PUBLIC_API_BASE_URL in frontend.
 
-🚀 Amplify (Frontend Hosting)
-Role: Hosts and deploys the Next.js frontend.
-- Go to Amplify → Create new app → Connect GitHub → select your repo and main branch.
-- In build settings, add:
-  NEXT_PUBLIC_API_BASE_URL=https://your-api-gateway-endpoint
-  NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_token
-  NEXT_PUBLIC_AWS_COGNITO_USER_POOL_ID=your_user_pool_id
-  NEXT_PUBLIC_AWS_COGNITO_USER_POOL_CLIENT_ID=your_client_id
-- Amplify builds and deploys automatically on every push.
+## Infrastructure Components
 
+### 🌐 VPC (Networking)
+
+**Purpose**: Provides secure network isolation for backend services
+
+#### Setup Steps:
+1. **Create VPC**
+   ```
+   AWS Console → VPC → Create VPC → "VPC and more"
+   ```
+
+2. **Network Components Created**:
+   - 1 Public subnet (for EC2 instances)
+   - 2 Private subnets (for RDS across different AZs)
+   - 1 Internet Gateway (attached to VPC)
+
+3. **Route Tables**:
+   - **Public Route Table**: Associated with public subnet, routes to Internet Gateway
+   - **Private Route Table**: Associated with private subnets
+
+4. **Security Groups**:
+   - **sg-ec2**: Allow HTTP (port 5000) and SSH (port 22) from your IP
+   - **sg-rds**: Allow PostgreSQL (port 5432) only from sg-ec2
+
+### 🖥️ EC2 (Backend Server)
+
+**Purpose**: Runs the Node.js/Express backend application
+
+#### Setup Steps:
+
+1. **Launch Instance**:
+   ```
+   AWS Console → EC2 → Launch Instance
+   ```
+   - Place in public subnet
+   - Attach sg-ec2 security group
+   - Create and download key pair (.pem file)
+
+2. **Connect via SSH**:
+   ```bash
+   ssh -i your-key.pem ubuntu@your-ec2-public-ip
+   ```
+
+3. **Install Dependencies**:
+   ```bash
+   sudo apt update
+   sudo apt install -y nodejs npm git
+   sudo npm install -g pm2
+   ```
+
+4. **Deploy Application**:
+   ```bash
+   git clone https://github.com/your-username/rental-app.git
+   cd rental-app/server
+   nano .env  # Configure environment variables
+   npm install
+   npx prisma migrate deploy
+   pm2 start app.js  # or npm run dev for development
+   ```
+
+### 🗄️ RDS (Database)
+
+**Purpose**: Managed PostgreSQL database with PostGIS for geospatial data
+
+#### Setup Steps:
+
+1. **Create Database**:
+   ```
+   AWS Console → RDS → Create database → PostgreSQL
+   ```
+   - Deploy in 2 private subnets (Multi-AZ)
+   - Attach sg-rds security group
+
+2. **Enable PostGIS Extension**:
+   ```bash
+   # From EC2 instance
+   sudo apt install -y postgresql-client
+   psql -h <rds-endpoint> -U <username> -d <dbname>
+   ```
+   ```sql
+   CREATE EXTENSION postgis;
+   ```
+
+3. **Update Backend Configuration**:
+   - Add `DATABASE_URL` to backend `.env`
+   - Restart the backend server
+
+### 🪣 S3 (Storage)
+
+**Purpose**: Stores property images and static assets
+
+#### Setup Steps:
+
+1. **Create Bucket**:
+   ```
+   AWS Console → S3 → Create bucket
+   ```
+
+2. **Configure Public Access**:
+   - Disable "Block all public access" (if public uploads needed)
+
+3. **Set CORS Policy**:
+   ```json
+   [
+     {
+       "AllowedHeaders": ["*"],
+       "AllowedMethods": ["GET", "POST", "PUT"],
+       "AllowedOrigins": ["*"]
+     }
+   ]
+   ```
+
+4. **Create IAM User**:
+   - Grant `AmazonS3FullAccess` policy
+   - Generate access keys for backend configuration
+
+### 🧩 Cognito & API Gateway
+
+**Purpose**: Authentication and API management
+
+#### Cognito Setup:
+1. **Create User Pool**:
+   ```
+   AWS Console → Cognito → Create User Pool
+   ```
+   - Enable email login
+   - Create App Client
+   - Note User Pool ID and Client ID
+
+#### API Gateway Setup:
+1. **Create REST API**:
+   ```
+   AWS Console → API Gateway → Create REST API
+   ```
+   - Integrate with EC2 backend endpoint
+   - Create Cognito Authorizer
+   - Attach authorizer to protected routes
+   - Deploy API
+
+### 🚀 Amplify (Frontend)
+
+**Purpose**: Hosts and deploys the Next.js frontend with CI/CD
+
+#### Setup Steps:
+
+1. **Connect Repository**:
+   ```
+   AWS Console → Amplify → Create new app → Connect GitHub
+   ```
+   - Select repository and main branch
+
+2. **Configure Build Settings**:
+   - Add environment variables (see [Environment Variables](#environment-variables))
+   - Amplify automatically builds and deploys on each push
+
+## Environment Variables
+
+### Backend (.env)
+```bash
+PORT=5000
+DATABASE_URL=postgresql://username:password@rds-endpoint:5432/dbname
+S3_BUCKET_NAME=your-bucket-name
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
+AWS_REGION=your-region
+```
+
+### Frontend (Amplify Environment Variables)
+```bash
+NEXT_PUBLIC_API_BASE_URL=https://your-api-gateway-endpoint
+NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_token
+NEXT_PUBLIC_AWS_COGNITO_USER_POOL_ID=your_user_pool_id
+NEXT_PUBLIC_AWS_COGNITO_USER_POOL_CLIENT_ID=your_client_id
+```
+---
+
+For additional support, refer to the [AWS Documentation](https://docs.aws.amazon.com/) or contact the development team.
 
 ## 📐 UML Diagram
 
