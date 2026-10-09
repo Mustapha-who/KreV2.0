@@ -133,10 +133,9 @@ export const getProperties = async (
         ) as location
       FROM "Property" p
       JOIN "Location" l ON p."locationId" = l.id
-      ${
-        whereConditions.length > 0
-          ? Prisma.sql`WHERE ${Prisma.join(whereConditions, " AND ")}`
-          : Prisma.empty
+      ${whereConditions.length > 0
+        ? Prisma.sql`WHERE ${Prisma.join(whereConditions, " AND ")}`
+        : Prisma.empty
       }
     `;
 
@@ -223,7 +222,7 @@ export const createProperty = async (
         return uploadResult.Location;
       })
     );
-// Use Nominatim API  to convert a place name or address into latitude and longitude
+    // Use Nominatim API  to convert a place name or address into latitude and longitude
 
     const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
@@ -243,9 +242,9 @@ export const createProperty = async (
     const [longitude, latitude] =
       geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
         ? [
-            parseFloat(geocodingResponse.data[0]?.lon),
-            parseFloat(geocodingResponse.data[0]?.lat),
-          ]
+          parseFloat(geocodingResponse.data[0]?.lon),
+          parseFloat(geocodingResponse.data[0]?.lat),
+        ]
         : [0, 0];
 
     // create location
